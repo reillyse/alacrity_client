@@ -6,10 +6,10 @@ Gem::Specification.new do |s|
   s.name        = "alacrity_client"
   s.version     = AlacrityClient::VERSION
   s.authors     = ["Sean Reilly"]
-  s.email       = ["sean@otoanalytics.com"]
+  s.email       = ["reillyse@gmail.com"]
   s.homepage    = ""
-  s.summary     = %q{TODO: Write a gem summary}
-  s.description = %q{TODO: Write a gem description}
+  s.summary     = %q{This gem provides access to an alacrity server}
+  s.description = %q{Gem provides synch and async calls for getting a players rank and updating a players rank}
 
   s.rubyforge_project = "alacrity_client"
 
