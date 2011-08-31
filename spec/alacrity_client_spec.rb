@@ -8,6 +8,7 @@ describe AlacrityClient::Connection do
   # for example the "kills" and "eats" are very much game specific
   # that said, it should still connect if you have the server running in the
   # right place (localhost:8888 at the moment) and the tests should still pass
+  # so it does test the structure of the api
   
   it "should connect and get correctly async" do
     @client = AlacrityClient::Connection.new
@@ -32,6 +33,15 @@ describe AlacrityClient::Connection do
   it "should connect and update synchronously too" do
     @client = AlacrityClient::Connection.new
     @client.update_player_ranking(1,100,"kills")
+  end
+
+  it "should be able to operate asynchronously"  do
+
+    @client = AlacrityClient::Connection.new
+    1000.times do 
+      @client.update_player_ranking_async(1,100,"kills",lambda { |http| puts "working" ; puts http.response; EM.stop})
+    end
+    puts "should happen first or in between not after"
   end
   
 end
