@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.version     = AlacrityClient::VERSION
   s.authors     = ["Sean Reilly"]
   s.email       = ["reillyse@gmail.com"]
-  s.homepage    = ""
+  s.homepage    = "http://github.com/reillyse/alacrity_client"
   s.summary     = %q{This gem provides access to an alacrity server}
   s.description = %q{Gem provides synch and async calls for getting a players rank and updating a players rank}
 
