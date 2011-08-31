@@ -12,9 +12,8 @@ class AlacrityClient::Connection
   def get_player_ranking(player)
     @http ||= Net::HTTP.new(@server, @port)
     path = "/getPlayerRanking?playerNum=#{player}"
-    
     resp, data = @http.get(path, nil)
-      return data
+    return data
 
   end
   
@@ -26,29 +25,20 @@ class AlacrityClient::Connection
       'Content-Type' => 'application/x-www-form-urlencoded'
     }
     resp, data = @http.post(path, data, headers)
-
     return data
   end
 
-  def get_player_ranking_async(player,callback_success = lambda { EM.stop},callback_err = lambda { EM.stop})
+  def get_player_ranking_async(player,callback_success,callback_err )
+    http = EventMachine::HttpRequest.new("http://#{@server}:#{@port}/getPlayerRanking").get :query => {'playerNum' => player}
+    http.errback { callback_err.call(http)}
+    http.callback { callback_success.call(http)}
+  end
 
-  EventMachine.run {
-      http = EventMachine::HttpRequest.new("http://#{@server}:#{@port}/getPlayerRanking").get :query => {'playerNum' => player}
+  def update_player_ranking_async(player,rank,type,callback_success ,callback_err )
 
-      http.errback { callback_err.call(http)}
-      http.callback { callback_success.call(http)}
-    }
-    end
-
-  
-  def update_player_ranking_async(player,rank,type,callback_success = lambda { EM.stop},callback_err = lambda { EM.stop})
-
-  EventMachine.run {
-      http = EventMachine::HttpRequest.new("http://#{@server}:#{@port}/updatePlayerRanking").post :body => {'playerNum' => player,'type' => type,'rank'=>rank}
-
-      http.errback { callback_err.call(http)}
-      http.callback { callback_success.call(http)}
-    }
-    end
+    http = EventMachine::HttpRequest.new("http://#{@server}:#{@port}/updatePlayerRanking").post :body => {'playerNum' => player,'type' => type,'rank'=>rank}
+    http.errback { callback_err.call(http)}
+    http.callback { callback_success.call(http)}
+  end
 end
 

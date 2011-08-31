@@ -11,37 +11,43 @@ describe AlacrityClient::Connection do
   # so it does test the structure of the api
   
   it "should connect and get correctly async" do
-    @client = AlacrityClient::Connection.new
-    @client.get_player_ranking_async(1,lambda { |http| p http.response ; EventMachine.stop },lambda { |http| p "Error.. #{http.error}"; EventMachine.stop })
 
+    EventMachine.run { 
+      client = AlacrityClient::Connection.new
+      client.get_player_ranking_async(1,lambda { |http| p http.response   ;EM.stop},lambda { |http| p "Error.. #{http.error}"  ;EM.stop})
+
+    }
   end
 
   it "it should connect and post correctly async" do
-    @client = AlacrityClient::Connection.new
-    @client.update_player_ranking_async(1,100,"kills",lambda { |http| p http.response ; EventMachine.stop },lambda { |http| p "Error.. #{http.error}"; EventMachine.stop })
-    @client.update_player_ranking_async(1,100,"eats",lambda { |http| p http.response ; EventMachine.stop },lambda { |http| p "Error.. #{http.error}"; EventMachine.stop })
-    @client.get_player_ranking_async(1,lambda { |http| p http.response ; EventMachine.stop },lambda { |http| p "Error.. #{http.error}"; EventMachine.stop })
-
+    client = AlacrityClient::Connection.new
+    EventMachine.run { 
+      client.update_player_ranking_async(1,100,"kills",lambda { |http| p http.response  ;EM.stop},lambda { |http| p "Error.. #{http.error}"  ;EM.stop  })
+    }
+    EventMachine.run { 
+      client.update_player_ranking_async(1,100,"eats",lambda { |http| p http.response  ;EM.stop},lambda { |http| p "Error.. #{http.error}" ;EM.stop })
+    }
+    EventMachine.run { 
+      client.get_player_ranking_async(1,lambda { |http| p http.response  ;EM.stop },lambda { |http| p "Error.. #{http.error}" ;EM.stop })
+    }
   end
 
   it "should connect and get ranking synchronously too" do
-    @client = AlacrityClient::Connection.new
-    @client.get_player_ranking(1)
+    client = AlacrityClient::Connection.new
+    client.get_player_ranking(1)
   end
 
   
   it "should connect and update synchronously too" do
-    @client = AlacrityClient::Connection.new
-    @client.update_player_ranking(1,100,"kills")
+    client = AlacrityClient::Connection.new
+    client.update_player_ranking(1,100,"kills")
   end
 
   it "should be able to operate asynchronously"  do
-
-    @client = AlacrityClient::Connection.new
-    1000.times do 
-      @client.update_player_ranking_async(1,100,"kills",lambda { |http| puts "working" ; puts http.response; EM.stop})
-    end
-    puts "should happen first or in between not after"
+    client = AlacrityClient::Connection.new
+    EventMachine.run { 
+      client.update_player_ranking_async(1,100,"kills",lambda { |http| puts "working" ;  puts http.response ;EM.stop}, lambda{ |http| puts "error" ; puts http.error ; EM.stop})
+      puts "should happen first or in between not after"
+    }
   end
-  
 end
