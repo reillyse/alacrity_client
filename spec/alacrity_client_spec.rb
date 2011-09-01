@@ -14,7 +14,7 @@ describe AlacrityClient::Connection do
 
     EventMachine.run { 
       client = AlacrityClient::Connection.new
-      client.get_player_ranking_async(1,lambda { |http| p http.response   ;EM.stop},lambda { |http| p "Error.. #{http.error}"  ;EM.stop})
+      client.get_player_ranking_async(1,lambda { |http| p JSON(http.response)   ;EM.stop},lambda { |http| p "Error.. #{http.error}"  ;EM.stop})
 
     }
   end
@@ -22,13 +22,13 @@ describe AlacrityClient::Connection do
   it "it should connect and post correctly async" do
     client = AlacrityClient::Connection.new
     EventMachine.run { 
-      client.update_player_ranking_async(1,100,"kills",lambda { |http| p http.response  ;EM.stop},lambda { |http| p "Error.. #{http.error}"  ;EM.stop  })
+      client.update_player_ranking_async(1,100,"kills",lambda { |http| p JSON(http.response)  ;EM.stop},lambda { |http| p "Error.. #{http.error}"  ;EM.stop  })
     }
     EventMachine.run { 
-      client.update_player_ranking_async(1,100,"eats",lambda { |http| p http.response  ;EM.stop},lambda { |http| p "Error.. #{http.error}" ;EM.stop })
+      client.update_player_ranking_async(1,100,"eats",lambda { |http| p JSON(http.response)  ;EM.stop},lambda { |http| p "Error.. #{http.error}" ;EM.stop })
     }
     EventMachine.run { 
-      client.get_player_ranking_async(1,lambda { |http| p http.response  ;EM.stop },lambda { |http| p "Error.. #{http.error}" ;EM.stop })
+      client.get_player_ranking_async(1,lambda { |http| p JSON(http.response)  ;EM.stop },lambda { |http| p "Error.. #{http.error}" ;EM.stop })
     }
   end
 
@@ -46,7 +46,7 @@ describe AlacrityClient::Connection do
   it "should be able to operate asynchronously"  do
     client = AlacrityClient::Connection.new
     EventMachine.run { 
-      client.update_player_ranking_async(1,100,"kills",lambda { |http| puts "working" ;  puts http.response ;EM.stop}, lambda{ |http| puts "error" ; puts http.error ; EM.stop})
+      client.update_player_ranking_async(1,100,"kills",lambda { |http| puts "working" ;  puts JSON(http.response) ;EM.stop}, lambda{ |http| puts "error" ; puts http.error ; EM.stop})
       puts "should happen first or in between not after"
     }
   end

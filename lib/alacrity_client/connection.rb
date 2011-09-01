@@ -1,7 +1,7 @@
 require 'net/http'
 require 'net/https'
 require 'em-http-request'
-
+require 'json'
 class AlacrityClient::Connection
 
   def initialize(server = "localhost",port = 8888)
@@ -13,7 +13,7 @@ class AlacrityClient::Connection
     @http ||= Net::HTTP.new(@server, @port)
     path = "/getPlayerRanking?playerNum=#{player}"
     resp, data = @http.get(path, nil)
-    return data
+    return JSON(data)
 
   end
   
@@ -25,15 +25,17 @@ class AlacrityClient::Connection
       'Content-Type' => 'application/x-www-form-urlencoded'
     }
     resp, data = @http.post(path, data, headers)
-    return data
+    return JSON(data)
   end
 
+  # using this method only makes sense if you are running event machine 
   def get_player_ranking_async(player,callback_success,callback_err )
     http = EventMachine::HttpRequest.new("http://#{@server}:#{@port}/getPlayerRanking").get :query => {'playerNum' => player}
     http.errback { callback_err.call(http)}
     http.callback { callback_success.call(http)}
   end
 
+  # using this method only makes sense if you are running event machine 
   def update_player_ranking_async(player,rank,type,callback_success ,callback_err )
 
     http = EventMachine::HttpRequest.new("http://#{@server}:#{@port}/updatePlayerRanking").post :body => {'playerNum' => player,'type' => type,'rank'=>rank}
